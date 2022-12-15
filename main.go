@@ -1,23 +1,24 @@
 package main
 
 import (
-	"fmt"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"go-redis-prac/redishelper"
-	"time"
+	"log"
 )
 
 func main() {
 	redishelper.New()
 
-	err := redishelper.Set("test_key", "test_value", 1*time.Hour)
-	if err != nil {
-		fmt.Println(err)
-	}
+	app := fiber.New(fiber.Config{})
+	app.Use(logger.New(logger.Config{
+		Format: "[${ip}]:${port} ${status} - ${method} ${path}\n",
+	}))
 
-	val, err := redishelper.Get("test_key")
-	if err != nil {
-		fmt.Println(err)
-	}
+	app.Use(recover.New())
 
-	fmt.Printf("test_key value : %v", val)
+	app.Get("/metrics", monitor.New(monitor.Config{Title: "Metrics Page"}))
+	log.Fatal(app.Listen(":3000"))
 }
