@@ -1,26 +1,20 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"go-redis-prac/redishelper"
 	"time"
 )
 
-func main(){
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
+func main() {
+	redishelper.New()
 
-	ctx := context.Background()
-	err := rdb.Set(ctx, "test_key", "test_value", 1*time.Hour).Err()
+	err := redishelper.Set("test_key", "test_value", 1*time.Hour)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	val, err := rdb.Get(ctx, "test_key").Result()
+	val, err := redishelper.Get("test_key")
 	if err != nil {
 		fmt.Println(err)
 	}
