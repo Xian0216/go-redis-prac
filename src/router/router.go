@@ -11,7 +11,7 @@ func Set(r fiber.Router) {
 	redisRouter := r.Group("redis/")
 	{
 		redisRouter.Get(":key", ctrl.Redis().Get)
-		redisRouter.Post(":key/:value", ctrl.Redis().Add)
+		redisRouter.Post(":key/:value", ctrl.Redis().Set)
 		redisRouter.Put(":key/:value", ctrl.Redis().Edit)
 		redisRouter.Delete(":key/:value", ctrl.Redis().Delete)
 	}
