@@ -5,12 +5,15 @@ type IController interface {
 }
 
 type controller struct {
+	redisCtrl IRedisController
 }
 
-func NewController() IController {
-	return &controller{}
+func NewController(redisCtrl IRedisController) IController {
+	return &controller{
+		redisCtrl: redisCtrl,
+	}
 }
 
-func (*controller) Redis() IRedisController {
-	return NewRedisController()
+func (c *controller) Redis() IRedisController {
+	return c.redisCtrl
 }

@@ -1,6 +1,9 @@
 package controller
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/go-redis/redis/v8"
+	"github.com/gofiber/fiber/v2"
+)
 
 type IRedisController interface {
 	Get(c *fiber.Ctx) error
@@ -9,10 +12,13 @@ type IRedisController interface {
 }
 
 type redisController struct {
+	rdb *redis.Client
 }
 
-func NewRedisController() IRedisController {
-	return &redisController{}
+func NewRedisController(rdb *redis.Client) IRedisController {
+	return &redisController{
+		rdb: rdb,
+	}
 }
 
 // Get implements IRedisController
