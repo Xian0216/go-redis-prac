@@ -8,20 +8,28 @@ import (
 )
 
 var _ctx = context.Background()
-var rdb *redis.Client
+var _rdb *redis.Client
 
 func New() {
-	rdb = redis.NewClient(&redis.Options{
+	_rdb = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 }
 
-func Set(key string, value interface{}, duration time.Duration) error {
+func GetClient() *redis.Client {
+	return _rdb
+}
+
+func Set(rdb *redis.Client, key string, value interface{}, duration time.Duration) error {
 	return rdb.Set(_ctx, key, value, duration).Err()
 }
 
-func Get(key string) (string, error) {
+func Get(rdb *redis.Client, key string) (string, error) {
 	return rdb.Get(_ctx, key).Result()
+}
+
+func Del(rdb *redis.Client, key ...string) error {
+	return rdb.Del(_ctx, key...).Err()
 }
