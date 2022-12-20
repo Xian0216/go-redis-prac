@@ -7,17 +7,15 @@ import (
 )
 
 type Injectors struct {
-	Ctrl   controller.IController
 	Router router.IRouter
 }
 
 var _injectors = &Injectors{}
 
 func Register() {
-	_injectors.Ctrl = controller.NewController(
+	_injectors.Router = router.NewRouter(controller.NewController(
 		controller.NewRedisController(redishelper.GetClient()),
-	)
-	_injectors.Router = router.NewRouter(_injectors.Ctrl)
+	))
 }
 
 func GetInjector() *Injectors {

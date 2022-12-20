@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"go-redis-prac/redishelper"
+	"time"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,17 +24,38 @@ func NewRedisController(rdb *redis.Client) IRedisController {
 	}
 }
 
-// Get implements IRedisController
-func (*redisController) Get(c *fiber.Ctx) error {
-	panic("unimplemented")
+func (r *redisController) Get(c *fiber.Ctx) error {
+	k := c.Params("key")
+	if k == "" {
+		return c.SendStatus(fiber.ErrBadRequest.Code)
+	}
+	v, err := redishelper.Get(r.rdb, k)
+	if err != nil {
+		return c.SendStatus(fiber.ErrInternalServerError.Code)
+	}
+
+	return c.Status(fiber.StatusOK).SendString(v)
 }
 
-// Set implements IRedisController
-func (*redisController) Set(c *fiber.Ctx) error {
-	panic("unimplemented")
+func (r *redisController) Set(c *fiber.Ctx) error {
+	k, v := c.Params("key"), c.Params("value")
+	if k == "" || v == "" {
+		return c.SendStatus(fiber.ErrBadRequest.Code)
+	}
+	if err := redishelper.Set(r.rdb, k, v, 1*time.Hour); err != nil {
+		return c.SendStatus(fiber.ErrInternalServerError.Code)
+	}
+
+	return c.SendStatus(fiber.StatusOK)
 }
 
-// Del implements IRedisController
-func (*redisController) Del(c *fiber.Ctx) error {
-	panic("unimplemented")
+func (r *redisController) Del(c *fiber.Ctx) error {
+	k := c.Params("key")
+	if k == "" {
+		return c.SendStatus(fiber.ErrBadRequest.Code)
+	}
+	if err := redishelper.Del(r.rdb, k); err != nil {
+		return c.SendStatus(fiber.ErrInternalServerError.Code)
+	}
+	return c.SendStatus(fiber.StatusOK)
 }

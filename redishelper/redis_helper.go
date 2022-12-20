@@ -22,8 +22,8 @@ func GetClient() *redis.Client {
 	return _rdb
 }
 
-func Set(rdb *redis.Client, key string, value interface{}, duration time.Duration) error {
-	return rdb.Set(_ctx, key, value, duration).Err()
+func Set(rdb *redis.Client, key string, value interface{}, expiration time.Duration) error {
+	return rdb.Set(_ctx, key, value, expiration).Err()
 }
 
 func Get(rdb *redis.Client, key string) (string, error) {

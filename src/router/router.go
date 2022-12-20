@@ -34,11 +34,11 @@ func (r router) New() {
 	app.Use(recover.New())
 	app.Get("/metrics", monitor.New(monitor.Config{Title: "Metrics Page"}))
 
-	redisRouter := app.Group("redis/")
+	redisRouter := app.Group("/redis")
 	{
-		redisRouter.Get(":key", r.ctrl.Redis().Get)
-		redisRouter.Post(":key/:value", r.ctrl.Redis().Set)
-		redisRouter.Delete(":key/:value", r.ctrl.Redis().Del)
+		redisRouter.Get("/:key", r.ctrl.Redis().Get)
+		redisRouter.Post("/:key/:value", r.ctrl.Redis().Set)
+		redisRouter.Delete("/:key/:value", r.ctrl.Redis().Del)
 	}
 
 	log.Fatal(app.Listen(":3000"))
