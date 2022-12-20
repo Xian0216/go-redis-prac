@@ -4,6 +4,8 @@ import (
 	"go-redis-prac/redishelper"
 	"time"
 
+	"log"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 )
@@ -31,6 +33,7 @@ func (r *redisController) Get(c *fiber.Ctx) error {
 	}
 	v, err := redishelper.Get(r.rdb, k)
 	if err != nil {
+		log.Printf("redishelper Get err : %s", err.Error())
 		return c.SendStatus(fiber.ErrInternalServerError.Code)
 	}
 
@@ -43,6 +46,7 @@ func (r *redisController) Set(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.ErrBadRequest.Code)
 	}
 	if err := redishelper.Set(r.rdb, k, v, 1*time.Hour); err != nil {
+		log.Printf("redishelper Set err : %s", err.Error())
 		return c.SendStatus(fiber.ErrInternalServerError.Code)
 	}
 
@@ -55,6 +59,7 @@ func (r *redisController) Del(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.ErrBadRequest.Code)
 	}
 	if err := redishelper.Del(r.rdb, k); err != nil {
+		log.Printf("redishelper Del err : %s", err.Error())
 		return c.SendStatus(fiber.ErrInternalServerError.Code)
 	}
 	return c.SendStatus(fiber.StatusOK)
