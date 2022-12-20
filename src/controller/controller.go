@@ -12,5 +12,5 @@ func NewController() IController {
 }
 
 func (*controller) Redis() IRedisController {
-	panic("unimplemented")
+	return NewRedisController()
 }
