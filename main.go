@@ -1,12 +1,14 @@
 package main
 
 import (
+	"go-redis-prac/redishelper"
+	"go-redis-prac/src/router"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"go-redis-prac/redishelper"
-	"log"
 )
 
 func main() {
@@ -20,5 +22,6 @@ func main() {
 	app.Use(recover.New())
 
 	app.Get("/metrics", monitor.New(monitor.Config{Title: "Metrics Page"}))
+	router.Set(app)
 	log.Fatal(app.Listen(":3000"))
 }
